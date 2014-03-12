@@ -19,10 +19,7 @@
 //
 
 #import "AZxhrTransport.h"
-#import "AFHTTPClient.h"
-#import "AFHTTPRequestOperation.h"
-#import "AZSocketIOTransportDelegate.h"
-
+#import <AFNetworking/AFNetworking.h>
 @interface AZxhrTransport ()
 @property(nonatomic, weak)id<AZSocketIOTransportDelegate> delegate;
 @property(nonatomic, readwrite, assign)BOOL connected;
@@ -35,7 +32,7 @@
 @synthesize connected;
 - (void)connect
 {
-    [self.client getPath:@""
+    [self.client GET:@""
               parameters:nil
                  success:^(AFHTTPRequestOperation *operation, id responseObject) {
                      self.connected = YES;
@@ -65,7 +62,7 @@
 - (void)disconnect
 {
     [self.client.operationQueue cancelAllOperations];
-    [self.client getPath:@"?disconnect"
+    [self.client GET:@"?disconnect"
               parameters:nil
                  success:^(AFHTTPRequestOperation *operation, id responseObject) {} 
                  failure:^(AFHTTPRequestOperation *operation, NSError *error) {}];
@@ -81,16 +78,14 @@
     [request setHTTPBody:[msg dataUsingEncoding:NSUTF8StringEncoding]];
     [request setValue:@"text/plain; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"Keep-Alive" forHTTPHeaderField:@"Connection"];
-    
-    AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+    [self.client HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
         if ([self.delegate respondsToSelector:@selector(didSendMessage)]) {
             [self.delegate didSendMessage];
         }
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         [self.delegate didFailWithError:error];
     }];
-    [self.client enqueueHTTPRequestOperation:op];
 }
 - (id)initWithDelegate:(id<AZSocketIOTransportDelegate>)_delegate secureConnections:(BOOL)_secureConnections
 {
@@ -105,8 +100,7 @@
                                protocolString, [self.delegate host], [self.delegate port], 
                                [self.delegate sessionId]];
         
-        self.client = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
-        self.client.stringEncoding = NSUTF8StringEncoding;
+        self.client = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
     }
     return self;
 }
