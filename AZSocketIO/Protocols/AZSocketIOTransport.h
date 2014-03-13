@@ -39,26 +39,26 @@
  
  @return The initialized transport.
  */
-- (id)initWithDelegate:(id<AZSocketIOTransportDelegate>)delegate secureConnections:(BOOL)secureConnections;
+- (id)initWithDelegate:(id <AZSocketIOTransportDelegate>)delegate secureConnections:(BOOL)secureConnections;
 
 /**
  Determines whether the transport will secure the connection.
  */
-@property(nonatomic, assign)BOOL secureConnections;
+@property(nonatomic, assign) BOOL secureConnections;
 
 /**
  Contains the current state of the transport.
  
  @return `YES` if the transport is connected, otherwise `NO`.
  */
-@property(nonatomic, readonly, getter = isConnected)BOOL connected;
+@property(nonatomic, readonly, getter = isConnected) BOOL connected;
 
 /**
  Sets the delegate for the transport.
  
  @param delegate A delegate class conforming to `AZSocketIOTransportDelegate`.
  */
-- (void)setDelegate:(id<AZSocketIOTransportDelegate>)delegate;
+- (void)setDelegate:(id <AZSocketIOTransportDelegate>)delegate;
 
 ///------------------------------------
 /// @name Communicating With the Server
@@ -79,5 +79,5 @@
  
  @param msg A serialized encoded message.
  */
-- (void)send:(NSString*)msg;
+- (void)send:(NSString *)msg;
 @end

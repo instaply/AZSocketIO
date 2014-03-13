@@ -25,10 +25,9 @@
 @end
 
 @implementation ViewController
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    // Do any additional setup after loading the view, typically from a nib.
     __weak ViewController *blockSelf = self;
     [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidBecomeActiveNotification
                                                       object:nil
@@ -38,14 +37,12 @@
                                                   }];
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self setupConn];
 }
 
-- (void)setupConn
-{
+- (void)setupConn {
     __weak ViewController *blockSelf = self;
     self.socket = [[AZSocketIO alloc] initWithHost:@"localhost" andPort:@"9000" secure:NO];
     //socket.transports = [NSMutableSet setWithObject:@"xhr-polling"];
@@ -56,24 +53,21 @@
     }];
     [self.socket connectWithSuccess:^{
         NSLog(@"Hurray");
-    } andFailure:^(NSError *error) {
+    }                    andFailure:^(NSError *error) {
         NSLog(@"Boo: %@", error);
     }];
 }
 
-- (void)sendTime
-{
+- (void)sendTime {
     [self.socket send:[[NSDate new] description] error:nil];
 }
 
-- (void)viewDidUnload
-{
+- (void)viewDidUnload {
     [super viewDidUnload];
     // Release any retained subviews of the main view.
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 

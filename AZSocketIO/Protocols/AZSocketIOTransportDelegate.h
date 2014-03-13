@@ -52,7 +52,7 @@
  
  @param error An instance of `NSError` that describes the problem.
  */
-- (void)didFailWithError:(NSError*)error;
+- (void)didFailWithError:(NSError *)error;
 
 ///--------------------------------------------
 /// @name Recieving Messages From the Transport
@@ -63,7 +63,7 @@
  
  @param message An `NSString` containing the message data.
  */
-- (void)didReceiveMessage:(NSString*)message;
+- (void)didReceiveMessage:(NSString *)message;
 
 ///---------------------------------------------------------
 /// @name Supplying Connection Information From the Delegate
@@ -74,19 +74,19 @@
  
  @return The socket.io server hostname.
  */
-- (NSString*)host;
+- (NSString *)host;
 
 /**
  Allows the transport to retrieve the port the socket.io server is running on.
  
  @return The socket.io server port.
  */
-- (NSString*)port;
+- (NSString *)port;
 
 /**
  Allows the transport to retrieve the current session id.
  
  @return The current session Id.
  */
-- (NSString*)sessionId;
+- (NSString *)sessionId;
 @end

@@ -25,15 +25,20 @@
 
 #define AZDOMAIN @"AZSocketIO"
 
-extern NSString * const AZSocketIODefaultNamespace;
+extern NSString *const AZSocketIODefaultNamespace;
 
 typedef void (^MessageReceivedBlock)(id data);
+
 typedef void (^EventReceivedBlock)(NSString *eventName, id data);
+
 typedef void (^ConnectedBlock)();
+
 typedef void (^DisconnectedBlock)();
+
 typedef void (^ErrorBlock)(NSError *error);
 
 typedef void (^ACKCallback)();
+
 typedef void (^ACKCallbackWithArgs)(NSArray *args);
 
 /** 
@@ -47,8 +52,8 @@ typedef enum {
 } AZSocketIOState;
 
 NS_ENUM(NSUInteger, AZSocketIOError) {
-    AZSocketIOErrorConnection   = 100,
-    AZSocketIOErrorArgs         = 3000,
+    AZSocketIOErrorConnection = 100,
+    AZSocketIOErrorArgs = 3000,
 };
 
 /**
@@ -58,50 +63,50 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
 /**
  The hostname of the socket.io server
  */
-@property(nonatomic, strong, readonly)NSString *host;
+@property(nonatomic, strong, readonly) NSString *host;
 /**
  The port the socket.io server is running on
  */
-@property(nonatomic, strong, readonly)NSString *port;
+@property(nonatomic, strong, readonly) NSString *port;
 /**
  Determines whether AZSocketIO will use secured connections such as wss or https
  */
-@property(nonatomic, assign, readonly)BOOL secureConnections;
+@property(nonatomic, assign, readonly) BOOL secureConnections;
 /**
  The namespace / endpoint of the socket.io server
  */
-@property(nonatomic, copy, readonly)NSString *endpoint;
+@property(nonatomic, copy, readonly) NSString *endpoint;
 /**
  Contains the current state of the connection.
  
  @warning This property may conflict with the state of the transport during state changes.
  */
-@property(nonatomic, readonly)AZSocketIOState state;
+@property(nonatomic, readonly) AZSocketIOState state;
 /**
  The set of transports the client wishes to use. Defaults to "websocket" and "xhr-polling".
  */
-@property(nonatomic, strong)NSMutableSet *transports;
+@property(nonatomic, strong) NSMutableSet *transports;
 /**
  The currently active transport, if one exists.
  */
-@property(nonatomic, strong)id<AZSocketIOTransport> transport;
+@property(nonatomic, strong) id <AZSocketIOTransport> transport;
 
 /**
  This block will be called on the reception of any non-protocol message.
  */
-@property(nonatomic, copy)MessageReceivedBlock messageReceivedBlock;
+@property(nonatomic, copy) MessageReceivedBlock messageReceivedBlock;
 /**
  This block will be called on the reception of any event.
  */
-@property(nonatomic, copy)EventReceivedBlock eventReceivedBlock;
+@property(nonatomic, copy) EventReceivedBlock eventReceivedBlock;
 /**
  This block will be called after the instance has disconnected
  */
-@property(nonatomic, copy)DisconnectedBlock disconnectedBlock;
+@property(nonatomic, copy) DisconnectedBlock disconnectedBlock;
 /**
  This block will be called when an error is reported by the socket.io server or the connection becomes unusable.
  */
-@property(nonatomic, copy)ErrorBlock errorBlock;
+@property(nonatomic, copy) ErrorBlock errorBlock;
 
 ///----------------------------------------------------
 /// @name Creating and Connecting to a Socket.io Server
@@ -117,6 +122,7 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
  @return the initialized client
  */
 - (id)initWithHost:(NSString *)host andPort:(NSString *)port secure:(BOOL)secureConnections;
+
 /**
  Initializes an `AZSocketIO` object with the specified host, port and namespace.
  
@@ -130,6 +136,7 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
  @return the initialized client
  */
 - (id)initWithHost:(NSString *)host andPort:(NSString *)port secure:(BOOL)secureConnections withNamespace:(NSString *)endpoint;
+
 /**
  Connects to the socket.io server.
  
@@ -137,6 +144,7 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
  @param failure A block object that will be executed when an error is reported by the socket.io server or the connection becomes unusable.
  */
 - (void)connectWithSuccess:(void (^)())success andFailure:(void (^)(NSError *error))failure;
+
 /**
  Disconnects from the socket.io server
  */
@@ -167,7 +175,7 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
  
  @return `YES` if the message was dispatched immediately, `NO` if it was queued.
  */
-- (BOOL)send:(id)data error:(NSError *__autoreleasing *)error ackWithArgs:(void (^)(NSArray *data))callback;
+- (BOOL)send:(id)data error:(NSError * __autoreleasing *)error ackWithArgs:(void (^)(NSArray *data))callback;
 
 /**
  Sends a normal message to the socket.io server.
@@ -180,7 +188,7 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
  
  @return `YES` if the message was dispatched immediately, `NO` if it was queued.
  */
-- (BOOL)send:(id)data error:(NSError *__autoreleasing *)error ack:(void (^)())callback;
+- (BOOL)send:(id)data error:(NSError * __autoreleasing *)error ack:(void (^)())callback;
 
 /**
  Emits a namespaced message to the socket.io server.
@@ -205,7 +213,7 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
  
  @return `YES` if the message was dispatched immediately, `NO` if it was queued.
  */
-- (BOOL)emit:(NSString *)name args:(id)args error:(NSError *__autoreleasing *)error ackWithArgs:(void (^)(NSArray *data))callback;
+- (BOOL)emit:(NSString *)name args:(id)args error:(NSError * __autoreleasing *)error ackWithArgs:(void (^)(NSArray *data))callback;
 
 /**
  Emits a namespaced message to the socket.io server.
@@ -219,7 +227,7 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
  
  @return `YES` if the message was dispatched immediately, `NO` if it was queued.
  */
-- (BOOL)emit:(NSString *)name args:(id)args error:(NSError *__autoreleasing *)error ack:(void (^)())callback;
+- (BOOL)emit:(NSString *)name args:(id)args error:(NSError * __autoreleasing *)error ack:(void (^)())callback;
 
 ///-------------------------------------
 /// @name Routing Events From the Server
@@ -283,23 +291,26 @@ NS_ENUM(NSUInteger, AZSocketIOError) {
 /**
  Determines whether AZSocketIO will try to reconnect. Defaults to 'YES'.
  */
-@property(nonatomic, assign, getter = shouldReconnect)BOOL reconnect;
+@property(nonatomic, assign, getter = shouldReconnect) BOOL reconnect;
 /**
  The initial delay, in seconds, before reconnecting. Defaults to '0.5'.
  */
-@property(nonatomic, assign)NSTimeInterval reconnectionDelay;
+@property(nonatomic, assign) NSTimeInterval reconnectionDelay;
 /**
  The maximum delay, in seconds, before reconnecting. After the delay hits this ceiling, reconnection attempts will stop. Defaults to 'MAX_FLOAT'.
  */
-@property(nonatomic, assign)NSTimeInterval reconnectionLimit;
+@property(nonatomic, assign) NSTimeInterval reconnectionLimit;
 /**
  The maximum number of reconnection attempts. Defaults to '10'.
  */
-@property(nonatomic, assign)NSUInteger maxReconnectionAttempts;
+@property(nonatomic, assign) NSUInteger maxReconnectionAttempts;
 
 #pragma mark overridden setters
 - (void)setMessageReceivedBlock:(void (^)(id data))messageReceivedBlock;
+
 - (void)setEventReceivedBlock:(void (^)(NSString *eventName, id data))eventReceivedBlock;
+
 - (void)setDisconnectedBlock:(void (^)())disconnectedBlock;
+
 - (void)setErrorBlock:(void (^)(NSError *error))errorBlock;
 @end

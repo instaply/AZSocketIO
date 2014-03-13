@@ -39,27 +39,27 @@ typedef enum {
 /**
  The type of the message.
  */
-@property(nonatomic, assign)MESSAGE_TYPE type;
+@property(nonatomic, assign) MESSAGE_TYPE type;
 
 /**
  The id of the message. This is used for ack'ing packets.
  */
-@property(nonatomic, strong)NSString *Id;
+@property(nonatomic, strong) NSString *Id;
 
 /**
  Determines whether the server will ACK a packet. If 'YES', ACK packet will be sent.
  */
-@property(nonatomic, assign)BOOL ack;
+@property(nonatomic, assign) BOOL ack;
 
 /**
  The endpoint for the packet. Currently unused.
  */
-@property(nonatomic, strong)NSString *endpoint;
+@property(nonatomic, strong) NSString *endpoint;
 
 /**
  The data to be appended to the packet. This should be preformated to match the type.
  */
-@property(nonatomic, strong)NSString *data;
+@property(nonatomic, strong) NSString *data;
 
 /**
  Initializes a packet using a serialized representation.
@@ -79,7 +79,8 @@ typedef enum {
 @end
 
 @interface AZSocketIOACKMessage : NSObject
-@property(nonatomic, strong)NSString *messageId;
-@property(nonatomic, strong)NSArray *args;
+@property(nonatomic, strong) NSString *messageId;
+@property(nonatomic, strong) NSArray *args;
+
 - (id)initWithPacket:(AZSocketIOPacket *)packet;
 @end

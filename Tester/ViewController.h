@@ -22,7 +22,7 @@
 #import "AZSocketIO.h"
 
 @interface ViewController : UIViewController
-@property(nonatomic, strong)AZSocketIO *socket;
-@property(nonatomic, strong)IBOutlet UILabel *name;
-@property(nonatomic, strong)IBOutlet UILabel *args;
+@property(nonatomic, strong) AZSocketIO *socket;
+@property(nonatomic, strong) IBOutlet UILabel *name;
+@property(nonatomic, strong) IBOutlet UILabel *args;
 @end
