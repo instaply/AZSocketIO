@@ -19,11 +19,10 @@
 //
 
 #import "AZWebsocketTransport.h"
-#import "AZSocketIOTransportDelegate.h"
 
 @interface AZWebsocketTransport ()
-@property(nonatomic, weak)id<AZSocketIOTransportDelegate> delegate;
-@property(nonatomic, readwrite, assign)BOOL connected;
+@property(nonatomic, weak) id <AZSocketIOTransportDelegate> delegate;
+@property(nonatomic, readwrite, assign) BOOL connected;
 @end
 
 @implementation AZWebsocketTransport
@@ -34,41 +33,40 @@
 @synthesize connected;
 
 #pragma mark AZSocketIOTransport
-- (id)initWithDelegate:(id<AZSocketIOTransportDelegate>)_delegate secureConnections:(BOOL)_secureConnections
-{
+- (id)initWithDelegate:(id <AZSocketIOTransportDelegate>)_delegate secureConnections:(BOOL)_secureConnections {
     self = [super init];
     if (self) {
         self.connected = NO;
         self.delegate = _delegate;
         self.secureConnections = _secureConnections;
-        
+
         NSString *protocolString = self.secureConnections ? @"wss://" : @"ws://";
-        NSString *urlString = [NSString stringWithFormat:@"%@%@:%@/socket.io/1/websocket/%@", 
-                               protocolString, [self.delegate host], [self.delegate port], 
-                               [self.delegate sessionId]];
+        NSString *urlString = [NSString stringWithFormat:@"%@%@:%@/socket.io/1/websocket/%@",
+                                                         protocolString, [self.delegate host], [self.delegate port],
+                                                         [self.delegate sessionId]];
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:urlString]];
         self.websocket = [[SRWebSocket alloc] initWithURLRequest:request];
         self.websocket.delegate = self;
     }
     return self;
 }
-- (void)dealloc
-{
+
+- (void)dealloc {
     [self disconnect];
 }
-- (void)connect
-{
+
+- (void)connect {
     [self.websocket open];
 }
-- (void)send:(NSString *)msg
-{
+
+- (void)send:(NSString *)msg {
     [self.websocket send:msg];
     if ([self.delegate respondsToSelector:@selector(didSendMessage)]) {
         [self.delegate didSendMessage];
     }
 }
-- (void)disconnect
-{
+
+- (void)disconnect {
     self.websocket.delegate = nil;
     [self.websocket close];
     self.websocket = nil;
@@ -77,19 +75,18 @@
 }
 
 #pragma mark SRWebSocketDelegate
-- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(NSString *)message
-{
+- (void)webSocket:(SRWebSocket *)webSocket didReceiveMessage:(NSString *)message {
     [self.delegate didReceiveMessage:message];
 }
-- (void)webSocketDidOpen:(SRWebSocket *)webSocket
-{
+
+- (void)webSocketDidOpen:(SRWebSocket *)webSocket {
     self.connected = YES;
     if ([self.delegate respondsToSelector:@selector(didOpen)]) {
         [self.delegate didOpen];
     }
 }
-- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean
-{
+
+- (void)webSocket:(SRWebSocket *)webSocket didCloseWithCode:(NSInteger)code reason:(NSString *)reason wasClean:(BOOL)wasClean {
     if (!self.connected || wasClean) {
         if ([self.delegate respondsToSelector:@selector(didClose)]) {
             [self.delegate didClose];
@@ -98,8 +95,8 @@
         [self webSocket:webSocket didFailWithError:nil];
     }
 }
-- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error
-{
+
+- (void)webSocket:(SRWebSocket *)webSocket didFailWithError:(NSError *)error {
     self.connected = NO;
     [self.delegate didFailWithError:error];
 }

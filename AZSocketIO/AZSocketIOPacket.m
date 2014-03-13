@@ -22,6 +22,7 @@
 
 @interface AZSocketIOPacket ()
 + (NSRegularExpression *)regex;
+
 + (NSString *)captureOrEmptyString:(NSString *)whole range:(NSRange)range;
 @end
 
@@ -32,8 +33,7 @@
 @synthesize endpoint;
 @synthesize data;
 
-- (id)init
-{
+- (id)init {
     self = [super init];
     if (self) {
         self.data = @"";
@@ -42,32 +42,30 @@
     return self;
 }
 
-- (id)initWithString:(NSString *)packetString
-{
+- (id)initWithString:(NSString *)packetString {
     self = [self init];
     if (self) {
         NSTextCheckingResult *result = [[AZSocketIOPacket regex] firstMatchInString:packetString
-                                                                            options:0 
+                                                                            options:0
                                                                               range:NSMakeRange(0, [packetString length])];
-        
+
         NSString *typeString = [packetString substringWithRange:[result rangeAtIndex:1]];
         self.type = typeString.length == 0 ? -1 : [typeString intValue];
         self.Id = [AZSocketIOPacket captureOrEmptyString:packetString range:[result rangeAtIndex:2]];
-        
+
         self.ack = NO;
         if (([self.Id length] > 0) &&
-            ([[self.Id substringFromIndex:[self.Id length]-1] isEqualToString:@"+"])) {
+                ([[self.Id substringFromIndex:[self.Id length] - 1] isEqualToString:@"+"])) {
             self.ack = YES;
         }
-        
+
         self.endpoint = [AZSocketIOPacket captureOrEmptyString:packetString range:[result rangeAtIndex:4]];
         self.data = [AZSocketIOPacket captureOrEmptyString:packetString range:[result rangeAtIndex:5]];
     }
     return self;
 }
 
-- (NSString *)encode
-{
+- (NSString *)encode {
     NSString *idString;
     if (self.Id != nil) {
         idString = self.Id;
@@ -77,24 +75,22 @@
     } else {
         idString = @"";
     }
-    
+
     // Message encoding format (https://github.com/LearnBoost/socket.io-spec#encoding) 
     // [message type] ':' [message id ('+')] ':' [message endpoint] (':' [message data])
     NSString *encodedString = [NSString stringWithFormat:@"%d:%@:%@:%@", self.type, idString, self.endpoint, self.data];
     return encodedString;
 }
 
-- (NSString *)description
-{
+- (NSString *)description {
     NSArray *pieces = [NSArray arrayWithObjects:[NSString stringWithFormat:@"<%@: %p>", NSStringFromClass([self class]), self],
-                       [NSString stringWithFormat:@"type: %d", self.type], [NSString stringWithFormat:@"id: %@", self.Id],
-                       [NSString stringWithFormat:@"endpoint: %@", self.endpoint],
-                       [NSString stringWithFormat:@"data: %@", self.data], nil];
+                                                [NSString stringWithFormat:@"type: %d", self.type], [NSString stringWithFormat:@"id: %@", self.Id],
+                                                [NSString stringWithFormat:@"endpoint: %@", self.endpoint],
+                                                [NSString stringWithFormat:@"data: %@", self.data], nil];
     return [pieces componentsJoinedByString:@"\n\t"];
 }
 
-+ (NSRegularExpression *)regex
-{
++ (NSRegularExpression *)regex {
     static NSRegularExpression *regex;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -106,9 +102,7 @@
 }
 
 
-
-+ (NSString *)captureOrEmptyString:(NSString *)whole range:(NSRange)range
-{
++ (NSString *)captureOrEmptyString:(NSString *)whole range:(NSRange)range {
     if (range.length <= 0) {
         return @"";
     } else {
@@ -120,32 +114,31 @@
 @implementation AZSocketIOACKMessage
 @synthesize messageId;
 @synthesize args;
-- (id)initWithPacket:(AZSocketIOPacket *)packet
-{
+
+- (id)initWithPacket:(AZSocketIOPacket *)packet {
     self = [super init];
     if (self) {
         if (![packet.data isKindOfClass:[NSString class]]) {
             [NSException raise:@"Packet is not an ack"
                         format:@"Packet data is: %@", packet.data];
         }
-        
+
         NSTextCheckingResult *result = [[AZSocketIOACKMessage ackRegex] firstMatchInString:packet.data
                                                                                    options:0
                                                                                      range:NSMakeRange(0, [packet.data length])];
         self.messageId = [packet.data substringWithRange:[result rangeAtIndex:1]];
-        
+
         if ([result rangeAtIndex:1].length != [result range].length) {
             NSString *ackData = [packet.data substringWithRange:[result rangeAtIndex:2]];
-            self.args = [NSJSONSerialization JSONObjectWithData:[ackData dataUsingEncoding:NSUTF8StringEncoding]        
-                                                        options:NSJSONReadingMutableContainers 
+            self.args = [NSJSONSerialization JSONObjectWithData:[ackData dataUsingEncoding:NSUTF8StringEncoding]
+                                                        options:NSJSONReadingMutableContainers
                                                           error:nil];
         }
     }
     return self;
 }
 
-+ (NSRegularExpression *)ackRegex
-{
++ (NSRegularExpression *)ackRegex {
     static NSRegularExpression *regex;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
