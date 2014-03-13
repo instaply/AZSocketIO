@@ -85,6 +85,7 @@ NSString *const AZSocketIODefaultNamespace = @"";
                                                          self.host, self.port];
 
         self.httpClient = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:urlString]];
+        self.httpClient.responseSerializer = [AFHTTPResponseSerializer serializer];
         self.ackCallbacks = [NSMutableDictionary dictionary];
         self.ackCount = 0;
         self.specificEventBlocks = [NSMutableDictionary new];
