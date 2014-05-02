@@ -11,6 +11,7 @@ Pod::Spec.new do |s|
   s.dependency 'AFNetworking', '~> 2.x'
   s.requires_arc = true
   s.platform = :ios, 5.0
+  s.ios.deployment_target = '6.0'
   s.prefix_header_contents = <<-EOS
 #import <Availability.h>
 
